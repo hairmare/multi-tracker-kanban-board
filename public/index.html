@@ -12,14 +12,15 @@
 
         <script>
             dojoConfig = {
-                isDebug: true,
-                parseOnLoad: true,
-                baseUrl: "/~hairmare/mtkb/public/js/dojo/",
-                modulePaths: {
-                    "mtkb": "mtkb"
+                isDebug         : true,
+                debugAtAllCosts : true,
+                parseOnLoad     : true,
+                baseUrl         : "/~hairmare/mtkb/public/js/dojo/",
+                modulePaths     : {
+                    "mtkb"      : "mtkb"
                 },
-                tracker_api: "tracker/demo/",
-                tracker_url: "tracker/demo/projects.php"
+                tracker_api     : "tracker/demo/",
+                tracker_url     : "tracker/demo/projects.php"
             }
         </script>
         <script src="js/dojo/dojo.js"></script>
@@ -53,7 +54,7 @@
                  data-dojo-props="region: 'center'">
                  <div id="boardTable" 
                       data-dojo-type="dojox.layout.GridContainer"
-                      data-dojo-props="acceptTypes: ['Portlet']">
+                      data-dojo-props="acceptTypes: ['Ticket','Task']">
                     &nbsp;
                  </div>
             </div>

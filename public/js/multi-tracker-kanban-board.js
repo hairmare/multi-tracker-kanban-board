@@ -1,8 +1,6 @@
 dojo.provide("mtkb.app");
 
 mtkb.app = {
-    store: null,
-    trackerUrl: dojo.config.trackerUrl,
 
     init: function() {
         console.log("initializing mtkb");
@@ -10,7 +8,27 @@ mtkb.app = {
     },
 
     startup: function() {
+        this.initStores();
         this.initUi();
+    },
+
+    initStores: function() {
+        this.projectStore = new dojo.data.ItemFileReadStore({
+            url             : dojo.config.tracker_api + "projects.json",
+            clearOnClose    : true,
+            urlPreventCache : true
+        });
+        this.stateStore = new dojo.data.ItemFileReadStore({
+            url             : dojo.config.tracker_api + "states.json",
+            clearOnClose    : true,
+            urlPreventCache : true
+        });
+        this.ticketStore = new dojo.data.ItemFileReadStore({
+            url             : dojo.config.tracker_api + "tickets.json",
+            clearOnClose    : true,
+            urlPreventCache : true
+        });
+
     },
 
     initUi: function() {
@@ -19,9 +37,7 @@ mtkb.app = {
     },
 
     initProjectSwitch: function() {
-        store = new dojo.data.ItemFileReadStore({
-            url: dojo.config.tracker_api + "projects.json"
-        });
+        store = this.projectStore;
         projectSwitch = dijit.byId("projectSwitch");
         projectSwitch.setStore(store);
         projectSwitch.watch(function(eventType) {
@@ -40,12 +56,11 @@ mtkb.app = {
     },
 
     clearBoard: function() {
+        // @todo
     },
 
     initBoard: function() {
-        var states = new dojo.data.ItemFileReadStore({
-            url: dojo.config.tracker_api + "states.json"
-        });
+        var states = this.stateStore;
         states.fetch({
             query: {}, 
             onBegin: function(size) {
@@ -64,71 +79,78 @@ mtkb.app = {
         board.setColumns(this.columnSize);
 
         var thead = dojo.create('thead', {}, board.gridContainerTable);
-        var head_tr = dojo.create('tr', {}, thead);
+        var headTr = dojo.create('tr', {}, thead);
 
         dojo.forEach(states, function(state) {
             console.log("Create Column "+state.name);
             var th = dojo.create("th", {
                 innerHTML: state.name
-            }, head_tr);
+            }, headTr);
         });
         board.startup();
     },
 
     loadTickets: function() {
-        var tickets = new dojo.data.ItemFileReadStore({
-            url: dojo.config.tracker_api + "tickets.json"
+        var tickets = this.ticketStore;
+        tickets.fetch({
+            query: {
+                type : "ticket"
+            }, 
+            onBegin: function(count) {
+                mtkb.app.ticketCount = count;
+            },
+            onComplete: function(tickets, store) {
+                mtkb.app.showTickets(tickets, store)
+            },
+            start: 0
         });
         tickets.fetch({
-            query: {}, 
-            onBegin: function(size) {
-                mtkb.app.ticketCount = size;
+            query: {
+                type : "task"
+            }, 
+            onBegin: function(count) {
+                mtkb.app.taskCount = count;
             },
-            onComplete: function(data, store) {
-                mtkb.app.showTicket(date, store)
+            onComplete: function(tickets, store) {
+                mtkb.app.showTickets(tickets, store)
             },
             start: 0
         });
     },
-    showTicket: function(ticket, store) {
- 
-        var board = dijit.byId("boardTable");
+    showTickets: function(tickets, store) {
+        dojo.forEach(tickets, function(ticket) {
+            mtkb.app.showTicket(ticket);
+        });
+    },
 
-        // event for portlets
-        dropEvent = function(event, source, target) {
-            mtkb.app.dropTask(event, this, source, target);
+    showTicket: function(ticket) {
+        var states = this.stateStore;
+        var board  = dijit.byId("boardTable");
+
+        // event for dnd stuff
+        var dropEvent = function(event, source, target) {
+            return mtkb.app.dropTask(event, this, source, target);
         };
 
-                // prepare some Content for the Portlet:
-                var portletContent1 = [
-                dojo.create('div', {
-                    innerHTML: 'Some content within the Portlet "dynPortlet1".'
-                })];
-                // create a new Portlet:
-                var portlet1 = new dojox.widget.Portlet({
-                    id: 'dynPortlet1',
-                    closable: false,
-                    dndType: 'Portlet',
-                    title: 'Portlet "dynPortlet1"',
-                    content: portletContent1
-                });
-                portlet1.watch(dropEvent);
-                // add the first Portlet to the GridContainer:
-        board.addChild(portlet1);
+        // contentPane containing data
+        var ticketContent = new dijit.layout.ContentPane({
+            content: [
+                dojo.create('div', { innerHTML: ticket.description })
+            ]
+        });
 
-                var portletContent2 = [
-                dojo.create('div', {
-                    innerHTML: 'Some content within the Portlet "dynPortlet2".'
-                })];
-                var portlet2 = new dojox.widget.Portlet({
-                    id: 'dynPortlet2',
-                    closable: false,
-                    dndType: 'Portlet',
-                    title: 'Portlet "dynPortlet2"',
-                    content: portletContent2
-                });
-        portlet2.watch(dropEvent);
-        board.addChild(portlet2);
+        // nice looking widget based on the data
+        var ticketPortlet = new dojox.widget.Portlet({
+            id       : "ticket_"+ticket.id,
+            closable : false,
+            title    : ticket.name,
+            dndType  : 'Ticket',
+            content  : ticketContent
+        });
+
+        // wrap that up
+        ticketPortlet.watch(dropEvent);
+        board.addChild(ticketPortlet);
     },
 
     dropTask: function(event, widget, source, target) {

@@ -4,15 +4,39 @@
     "items" : [
         {
             "id"          : "1",
-            "name"        : "Problem 1",
-            "description" : "I am very complex!",
-            "type"        : {}
+            "name"        : "Ticket #1",
+            "type"        : "ticket",
+            "description" : "Wir alle brauchen ein Kanban Board!",
+            "children"    : [
+                {
+                    "_reference" : "state_new"
+                },
+                {
+                    "_reference" : "2"
+                }
+            ]
+        },
+        {
+            "id"          : "state_new",
+            "name"        : "Neu",
+            "type"        : "state"
         },
         {
             "id"          : "2",
-            "name"        : "Problem 2",
-            "description" : "I am less complex",
-            "type"        : {}
+            "name"        : "Task #2",
+            "type"        : "task",
+            "description" : "Kanban Boards welche in den diversen Trackern integriert werden können anschauen.",
+            "children"    : [
+                { 
+                    "_reference" : "state_done" 
+                }
+            ]
+        },
+        {
+            "id"   : "state_done",
+            "name" : "fertig",
+            "type" : "state"
         }
+
     ]
 }

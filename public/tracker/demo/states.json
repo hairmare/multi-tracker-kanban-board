@@ -3,16 +3,45 @@
     "label"         : "name",
     "items" : [
         {
-            "id"   : "1",
-            "name" : "Neu"
+            "id"   : "state_new",
+            "name" : "Neu",
+            "type" : "state"
         },
         {
-            "id"   : "2",
-            "name" : "Warten auf Bearbeitung"
+            "id"   : "state_waiting_for_work",
+            "name" : "Warten auf Bearbeitung",
+            "type" : "state"
         },
         {
-            "id"   : "3",
-            "name" : "in Bearbeitung"
+            "id"   : "state_working",
+            "name" : "in Bearbeitung",
+            "type" : "state"
+
+        },
+        {
+            "id"   : "state_waiting_for_test",
+            "name" : "Warten auf Test",
+            "type" : "state"
+        },
+        {
+            "id"   : "state_testing",
+            "name" : "in Test",
+            "type" : "state"
+        },
+        {
+            "id"   : "state_waiting_for_release",
+            "name" : "Warten auf Release",
+            "type" : "state"
+        },
+        {
+            "id"   : "state_releasing",
+            "name" : "Releasing",
+            "type" : "state"
+        },
+        {
+            "id"   : "state_done",
+            "name" : "erledigt",
+            "type" : "state"
         }
     ]
 
