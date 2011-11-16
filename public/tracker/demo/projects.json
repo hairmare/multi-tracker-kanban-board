@@ -1,0 +1,14 @@
+{
+    "identifier"   : "id",
+    "label"        : "name",
+    "items" : [
+        {
+            "id"   : "1",
+            "name" : "Test Project"
+        },
+        {
+            "id"   : "2",
+            "name" : "Another Test Project"
+        }
+    ]
+}
