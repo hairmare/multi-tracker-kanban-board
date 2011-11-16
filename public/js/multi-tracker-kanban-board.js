@@ -53,13 +53,13 @@ mtkb.app = {
         var board = dijit.byId("boardTable");
         board.setColumns(size);
 
-        /**
-        var states = new dojo.data.ItemFileReadStore({
-            url: dojo.config.tracker_api + "states.json"
+        dojo.create('thead', {
         });
-        states.query({}),forEach(function(state) {
-            console.log(state);
-        });*/
+
+        // event for portlets
+        dropEvent = function(event, source, target) {
+            mtkb.app.dropTask(event, this, source, target);
+        };
 
                 // prepare some Content for the Portlet:
                 var portletContent1 = [
@@ -74,6 +74,7 @@ mtkb.app = {
                     title: 'Portlet "dynPortlet1"',
                     content: portletContent1
                 });
+                portlet1.watch(dropEvent);
                 // add the first Portlet to the GridContainer:
         board.addChild(portlet1);
 
@@ -88,14 +89,16 @@ mtkb.app = {
                     title: 'Portlet "dynPortlet2"',
                     content: portletContent2
                 });
+        portlet2.watch(dropEvent);
         board.addChild(portlet2);
         board.startup();
     },
 
-    dropTask: function(source, nodes, copy, target) {
-        // Your Code here
-            console.log(source);
-            console.log(target);
+    dropTask: function(event, widget, source, target) {
+            if (event == "column") {
+                console.log("Dragged from "+source+" to "+target+"!");
+                console.log(widget)
+            }
     }
 }
 

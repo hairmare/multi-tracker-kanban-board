@@ -8,6 +8,10 @@
         },
         {
             "id"    : 2,
+            "label" : "Warten auf Bearbeitung"
+        },
+        {
+            "id"    : 3,
             "label" : "in Bearbeitung"
         }
     ]
