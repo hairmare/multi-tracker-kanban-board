@@ -1,18 +1,18 @@
 {
     "identifier"    : "id",
-    "label"         : "label",
+    "label"         : "name",
     "items" : [
         {
-            "id"    : 1,
-            "label" : "Neu"
+            "id"   : "1",
+            "name" : "Neu"
         },
         {
-            "id"    : 2,
-            "label" : "Warten auf Bearbeitung"
+            "id"   : "2",
+            "name" : "Warten auf Bearbeitung"
         },
         {
-            "id"    : 3,
-            "label" : "in Bearbeitung"
+            "id"   : "3",
+            "name" : "in Bearbeitung"
         }
     ]
 

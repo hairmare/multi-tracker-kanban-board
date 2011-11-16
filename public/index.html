@@ -14,7 +14,7 @@
             dojoConfig = {
                 isDebug: true,
                 parseOnLoad: true,
-                baseUrl: "/~hairmare/mtkb/public/js/dojo/public/",
+                baseUrl: "/~hairmare/mtkb/public/js/dojo/",
                 modulePaths: {
                     "mtkb": "mtkb"
                 },
@@ -34,6 +34,7 @@
             dojo.require("dijit.form.Select");
             dojo.require("dojo.parser");
             dojo.require("dojo.io.script");
+            dojo.require("dojo.store.Memory");
             dojo.require("dojo.data.ItemFileReadStore");
 
             dojo.ready(function() {

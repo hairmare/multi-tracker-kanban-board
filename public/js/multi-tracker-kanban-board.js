@@ -46,15 +46,53 @@ mtkb.app = {
         var states = new dojo.data.ItemFileReadStore({
             url: dojo.config.tracker_api + "states.json"
         });
-        states.fetch({query: {}, onBegin: this.initGrid, start: 0, count: 0});
+        states.fetch({
+            query: {}, 
+            onBegin: function(size) {
+                mtkb.app.columnSize = size;
+            },
+            onComplete: function(data, store) {
+                mtkb.app.initGrid(data, store);
+                mtkb.app.loadTickets();
+            },
+            start: 0
+        });
     },
 
-    initGrid: function(size, req) {
+    initGrid: function(states, store) {
         var board = dijit.byId("boardTable");
-        board.setColumns(size);
+        board.setColumns(this.columnSize);
 
-        dojo.create('thead', {
+        var thead = dojo.create('thead', {}, board.gridContainerTable);
+        var head_tr = dojo.create('tr', {}, thead);
+
+        dojo.forEach(states, function(state) {
+            console.log("Create Column "+state.name);
+            var th = dojo.create("th", {
+                innerHTML: state.name
+            }, head_tr);
         });
+        board.startup();
+    },
+
+    loadTickets: function() {
+        var tickets = new dojo.data.ItemFileReadStore({
+            url: dojo.config.tracker_api + "tickets.json"
+        });
+        tickets.fetch({
+            query: {}, 
+            onBegin: function(size) {
+                mtkb.app.ticketCount = size;
+            },
+            onComplete: function(data, store) {
+                mtkb.app.showTicket(date, store)
+            },
+            start: 0
+        });
+    },
+    showTicket: function(ticket, store) {
+ 
+        var board = dijit.byId("boardTable");
 
         // event for portlets
         dropEvent = function(event, source, target) {
@@ -91,7 +129,6 @@ mtkb.app = {
                 });
         portlet2.watch(dropEvent);
         board.addChild(portlet2);
-        board.startup();
     },
 
     dropTask: function(event, widget, source, target) {
