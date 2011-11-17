@@ -7,3 +7,6 @@
 [submodule "public/js/dijit"]
 	path = public/js/dijit
 	url = https://github.com/dojo/dijit.git
+[submodule "lib/zf"]
+	path = lib/zf
+	url = https://github.com/zendframework/zf2.git
