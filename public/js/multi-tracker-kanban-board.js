@@ -14,17 +14,17 @@ mtkb.app = {
 
     initStores: function() {
         this.projectStore = new dojo.data.ItemFileReadStore({
-            url             : dojo.config.tracker_api + "projects.json",
+            url             : dojo.config.trackerApi + "projects.json",
             clearOnClose    : true,
             urlPreventCache : true
         });
         this.stateStore = new dojo.data.ItemFileReadStore({
-            url             : dojo.config.tracker_api + "states.json",
+            url             : dojo.config.trackerApi + "states.json",
             clearOnClose    : true,
             urlPreventCache : true
         });
         this.ticketStore = new dojo.data.ItemFileReadStore({
-            url             : dojo.config.tracker_api + "tickets.json",
+            url             : dojo.config.trackerApi + "tickets.json",
             clearOnClose    : true,
             urlPreventCache : true
         });
