@@ -2,15 +2,21 @@
 
 namespace Mtkb\Www\Tracker\Mantis;
 
-use Mtkb\Tracker\Mantis,
-    Zend\Json\Server\Server;
+use Mtkb\Tracker\Mantis\Mantis,
+    Mtkb\TrackerProjects,
+    Mtkb\Tracker\Mantis\States,
+    Mtkb\Tracker\Mantis\Tickets,
+    Zend\Json\Server\Server,
+    Zend\Json\Server\Smd,
+    SoapClient;
 
-require_once dirname(__FILE__)."/../../../config_default.php";
-require_once dirname(__FILE__)."/../../../config.php";
+require_once __DIR__."/../../../bootstrap.php";
+
+
+// ugly hack to keep global options :)
 global $globalMantisOptions;
 $globalMantisOptions = $config_tracker_mantis;
 
-require_once dirname(__FILE__)."/../../../src/Tracker/Mantis.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Server.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/AbstractServer.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Definition.php";
@@ -23,9 +29,11 @@ require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Method/Prototype.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Method/Callback.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Method/Definition.php";
+require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Method/Parameter.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/Prototype.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/ReflectionReturnValue.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/Node.php";
+require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/ReflectionParameter.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/AbstractFunction.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Server/Reflection/ReflectionMethod.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Json/Server/Smd/Service.php";
@@ -37,14 +45,31 @@ require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Json/Server/Respon
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Json/Server/Response/Http.php";
 require_once dirname(__FILE__)."/../../../lib/zf/library/Zend/Json/Server/Server.php";
 
+
 class Service {
     private $_mantis = false;
-    protected $mantisClassname = '\Mtkb\Www\Tracker\Mantis';
+    protected $mantisClassname = '\Mtkb\Tracker\Mantis\Mantis';
 
     public function projects()
     {
-        $mantis = $this->_getMantis();
-        return $mantis->getProjects();
+        return $this->_getMantis()->getProjects()->toArray();
+    }
+    public function states()
+    {
+        return $this->_getMantis()->getStates()->toArray();
+    }
+    public function tickets($projectId)
+    {
+        return $this->_getMantis()->getTickets($projectId)->toArray();
+    }
+    public function moveTicket($ticketId, $newStatus, $note = null)
+    {
+        return $this->_getMantis()
+                    ->moveTicket(
+                        $ticketId,
+                        $newStatus,
+                        $note
+                    )->toArray();
     }
     private function _getMantis() 
     {
@@ -57,9 +82,16 @@ class Service {
     {
         global $globalMantisOptions;
         $mantis = new $this->mantisClassname;;
-        $mantis->setOptions($globaMantisOptions);
-        $mantis->setDataStore("projects", new Projects);
-        $mantis->setDataStore("state", new States);
+        $mantis->setOptions($globalMantisOptions);
+        $mantis->setSoapClient(
+            new SoapClient(
+                $globalMantisOptions['wsdl'],
+                $globalMantisOptions
+            )
+        );
+        $mantis->setDataStore("projects", new TrackerProjects);
+        $mantis->setDataStore("states", new States);
+        $mantis->setDataStore("tickets", new Tickets);
         $this->_mantis = $mantis;
     }
 }
@@ -68,8 +100,8 @@ $server = new Server();
 $server->setClass('Mtkb\Www\Tracker\Mantis\Service');
      
 if ('GET' == $_SERVER['REQUEST_METHOD']) {
-    $server->setTarget('/json-rpc.php')
-           ->setEnvelope(Zend_Json_Server_Smd::ENV_JSONRPC_2);
+    $server->setTarget($_SERVER['REQUEST_URI'])
+           ->setEnvelope(Smd::ENV_JSONRPC_2);
     $smd = $server->getServiceMap();
    
     // Set Dojo compatibility:

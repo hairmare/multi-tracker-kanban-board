@@ -18,7 +18,8 @@
                 modulePaths     : {
                     "mtkb"      : "mtkb"
                 },
-                trackerApi      : "tracker/mantis/",
+                packagePaths    : [],
+                trackerApi      : "/~hairmare/mtkb/public/tracker/mantis/",
             }
         </script>
         <script src="js/dojo/dojo.js"></script>
@@ -27,20 +28,38 @@
             dojo.require("dijit.layout.BorderContainer");
             dojo.require("dijit.layout.TabContainer");
             dojo.require("dijit.layout.ContentPane");
+            dojo.require("dijit.form.Form");
+            dojo.require("dijit.form.Button");
+            dojo.require("dijit.Dialog");
+            dojo.require("dijit.form.TextBox");
             dojo.require("dojox.mdnd.LazyManager");
-            dojo.require("dojox.layout.GridContainer")
+            dojo.require("dojox.layout.GridContainer");
             dojo.require("dojox.widget.Portlet");
             dojo.require("dijit.form.Select");
             dojo.require("dojo.parser");
             dojo.require("dojo.io.script");
             dojo.require("dojo.store.Memory");
+            dojo.require("dojo.store.JsonRest");
+            dojo.require("dojo.rpc.JsonService");
+            dojo.require("dojo.data.ObjectStore");
             dojo.require("dojo.data.ItemFileReadStore");
 
             dojo.ready(function() {
                 mtkb.app.init();
             });
+
+            if (typeof console.table == 'undefined') {
+                console.table = function(data) {
+                    console.log(data)
+                };
+            }
         </script>
         <script src="js/multi-tracker-kanban-board.js"></script>
+        <style>
+            .gridContainerTable thead tr {
+                height: 30px;
+            }
+        </style>
     </head>
     <body class="claro" id="mtkb">
         <div id="appLayout" class="demoLayout"
@@ -55,6 +74,29 @@
                       data-dojo-props="acceptTypes: ['Ticket','Task']">
                     &nbsp;
                  </div>
+                 <div dojoType="dijit.Dialog" id="updateTicketDialog" title="Update Ticket">
+                    <form data-dojo-type="dijit.form.Form">
+                        <script type="dojo/event" data-dojo-event="onSubmit" data-dojo-args="e">
+                            dojo.stopEvent(e); // prevent the default submit
+                            if (!this.isValid()) {
+                                return;
+                            }
+                            mtkb.app.updateTicket(this);
+                        </script>
+                        <div class="dijitDialogPaneContentArea">
+                            <input dojoType="dijit.form.TextBox" type="text" name="note">
+                        </div>
+                        <div class="dijitDialogPaneActionBar">
+                            <button dojoType="dijit.form.Button" type="submit">
+                                OK
+                            </button>
+                            <button data-dojo-type="dijit.form.Button" type="button" 
+                                    data-dojo-props="onClick:function(){dijit.byId('updateTicketDialog').hide(); mtkb.app.abortDragTicket();}">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                 </div>
             </div>
 
             <div class="edgePanel"
@@ -62,7 +104,7 @@
                  data-dojo-props="region: 'top'">
                 <div>
                     <select id="projectSwitch" data-dojo-type="dijit.form.Select"
-                            data-dojo-props="name: 'projectSwitch'">
+                            data-dojo-props="name: 'projectSwitch', emptyLabel: 'no projects available'">
                 </div>
             </div>
         </div>
