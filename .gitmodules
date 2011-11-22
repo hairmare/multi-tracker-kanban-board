@@ -10,3 +10,6 @@
 [submodule "lib/zf"]
 	path = lib/zf
 	url = https://github.com/zendframework/zf2.git
+[submodule "lib/phpactiveresource"]
+	path = lib/phpactiveresource
+	url = https://github.com/lux/phpactiveresource.git
