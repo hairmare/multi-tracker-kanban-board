@@ -2,20 +2,12 @@
 
 namespace Mtkb\Tracker\Mantis;
 
-user Mtkb\TrackerProjects;
-
-use Zend\Dojo\Data,
+use Mtkb\Tracker\Projects,
+    Zend\Dojo\Data,
     SoapClient,
     stdClass;
 
-require_once dirname(__FILE__)."/../../lib/zf/library/Zend/Json/Json.php";
-require_once dirname(__FILE__)."/../../lib/zf/library/Zend/Dojo/Exception.php";
-require_once dirname(__FILE__)."/../../lib/zf/library/Zend/Dojo/Exception/InvalidArgumentException.php";
-require_once dirname(__FILE__)."/../../lib/zf/library/Zend/Dojo/Exception/RuntimeException.php";
-require_once dirname(__FILE__)."/../../lib/zf/library/Zend/Dojo/Data.php";
-
-class Mantis
-{
+class Tracker {
     private $_isError = false;
     private $_options = false;
     private $_soap = false;
@@ -28,7 +20,7 @@ class Mantis
     {
         $this->_soap = $object;
     }
-    public function setDataStore($type, Data $dataStore)
+    public function setDataStore($type, $dataStore)
     {
         $this->_dataStore[$type] = $dataStore;
     }
@@ -146,9 +138,6 @@ class Mantis
             "id",
             "name",
         );
-        if ($mode == "projects") {
-            $allowedNodes[] = "status";
-        }
         if ($mode == "tickets") {
             $allowedNodes[] = "status";
             $allowedNodes[] = "description";
@@ -180,17 +169,6 @@ class Mantis
     }
 }
 
-class Projects extends Data {
-    protected $_identifier = "id";
-    protected $_label      = "name";
-}
-class States extends Data {
-    protected $_identifier = "id";
-    protected $_label      = "name";
-}
-class Tickets extends Data {
-    protected $_identifier = "id";
-}
 class Error {
 }
 

@@ -115,8 +115,15 @@ mtkb.app = {
         };
 
         // contentPane containing data
-        var ticketContent = new dijit.layout.ContentPane({});
-        ticketContent.addChild(dojo.create('div', { innerHTML: ticket.description }));
+        var ticketContent = new dijit.layout.BorderContainer({
+            class : "ticketContentContainer"
+        });
+        ticketContent.addChild(
+            new dijit.layout.ContentPane({
+                content: ticket.description,
+                region: "center"
+            })
+        );
 
         // find right column
         colNum = this._findColumn(ticket)
