@@ -86,29 +86,31 @@ class Tracker {
     public function moveTicket($ticketId, $newStatus, $note = null)
     {
         try {
-            $value = $this->_arTicket->find($ticketId);
-            //$value->set('status', "<status id='2'/>");
-            $value->status['id'] = $newStatus;
-            //    "@id"   => $newStatus,
-            //    "name" => $this->_statuses[$newStatus]['name']
-            //));
-            //$value->status['id'] = $newStatus;
-            foreach($this->_statuses AS $status) {
-                if ($status["id"] == $newStatus) {
-                    $value->status['name'] = $status["name"];
-                }
-            }
-            $return = $value->save();
-            var_export($return);
-            //var_dump(\get_class_methods($value));
-            //$this->_arTicket->update($value);
+            // load isse
+            $this->_arTicket->find($ticketId);
 
+            // update status (whew, i tried like over 9000 possibilities thanks to redmines sooper apidox)
+            $this->_arTicket->set('status_id', $newStatus);
+
+            // add note
+            if ($note !== null) {
+                $this->_arTicket->set('notes', $note);
+            }
+
+            // save teh shizzle
+            $this->_arTicket->save();
+
+            // reload to finish up
+            $value = $this->_arTicket->find($ticketId);
+
+            // re-add to store in new position after saving
             $ticket = new \stdClass;
             $ticket->id = (int)$value->id;
             $ticket->name = (string)$value->subject;
             $ticket->description = (string)$value->description;
             $ticket->status = new \stdClass;
             $ticket->status->id = (int)$value->status['id'];
+            $ticket->status->newStatus = $newStatus;
             $ticket->status->name = (string)$value->status['name'];
 
             $this->_dataStore["tickets"]->addItem($ticket);
@@ -193,6 +195,7 @@ class Project extends \ActiveResource
      * hack for phpactiveresource not handling namespaces correctly
      */
     var $element_name = 'project';
+    var $request_format = 'xml'; 
 }
 class Issue extends \ActiveResource
 {
@@ -200,4 +203,5 @@ class Issue extends \ActiveResource
      * hack for phpactiveresource not handling namespaces correctly
      */
     var $element_name = 'issue';
+    var $request_format = 'xml'; 
 }
