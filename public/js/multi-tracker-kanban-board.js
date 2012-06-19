@@ -178,7 +178,7 @@ mtkb.app = {
         this.rpc.moveTicket(
             data.id,
             status.id,
-            form.value.note
+            dijit.byId('commit-note').get("value") // timing errors are why i grab it this way and not thru form.value.note
         ).addCallback(function(issue) {
             console.info("Ticket stored on server");
             // reload stuff
