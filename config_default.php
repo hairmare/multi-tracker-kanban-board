@@ -36,16 +36,16 @@ $statuses = array(
     ),
     array(
         "id"   => "2",
-        "name" => "In Bearbeitung"
+        "name" => "Development"
     ),
     array(
         "id"   => "3",
-        "name" => "Gelöst"
+        "name" => "Build"
     ),
     array(
         "id"   => "4",
         "name" => "Feedback"
-    ),
+    )/*,
     array(
         "id"   => "5",
         "name" => "Erledigt"
@@ -53,7 +53,7 @@ $statuses = array(
     array(
         "id"   => "6",
         "name" => "Abgewiesen"
-    )
+    )*/
 );
 
 $config_tracker_redmine = array(

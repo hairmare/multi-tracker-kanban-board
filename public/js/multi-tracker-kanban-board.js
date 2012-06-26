@@ -143,6 +143,8 @@ mtkb.app = {
         // wrap that up
         ticketPortlet.watch(dropEvent);
         board.addChild(ticketPortlet, colNum);
+        // resize to force redraw
+        ticketPortlet.resize();
         return ticketPortlet;
     },
 

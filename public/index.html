@@ -11,8 +11,8 @@
 
         <script>
             dojoConfig = {
-                isDebug         : true,
-                debugAtAllCosts : true,
+                isDebug         : false,
+                debugAtAllCosts : false,
                 parseOnLoad     : true,
                 baseUrl         : "/~hairmare/mtkb/public/js/dojo/",
                 modulePaths     : {
@@ -70,10 +70,10 @@
              data-dojo-type="dijit.layout.BorderContainer"
              data-dojo-props="design: 'headline'">
 
-            <div class="centerPanel" id="centerPanel"
+            <div class="centerPanel designPanel" id="centerPanel"
                  data-dojo-type="dijit.layout.ContentPane"
                  data-dojo-props="region: 'center'">
-                 <div id="boardTable" 
+                 <div class="designPanel" id="boardTable" 
                       data-dojo-type="dojox.layout.GridContainer"
                       data-dojo-props="acceptTypes: ['Ticket','Task']">
                     &nbsp;
@@ -88,7 +88,7 @@
                             mtkb.app.updateTicket(this);
                         </script>
                         <div class="dijitDialogPaneContentArea">
-                            <input dojoType="dijit.form.TextBox" type="text" name="note">
+                            <input dojoType="dijit.form.TextBox" type="text" name="note" id="commit-note">
                         </div>
                         <div class="dijitDialogPaneActionBar">
                             <button dojoType="dijit.form.Button" type="submit">
@@ -103,11 +103,13 @@
                  </div>
             </div>
 
-            <div class="edgePanel"
+            <div class="edgePanel darkBar"
                  data-dojo-type="dijit.layout.ContentPane"
                  data-dojo-props="region: 'top'">
                 <div>
-                    <select id="projectSwitch" data-dojo-type="dijit.form.Select"
+                    <h1 class="dijitInline">Multi Tracker Kanban Board</h1>
+                    <select id="projectSwitch" style="background-color:black; right: 2em; top: 30%; position: absolute;"
+                            data-dojo-type="dijit.form.Select"
                             data-dojo-props="name: 'projectSwitch', emptyLabel: 'no projects available'">
                 </div>
             </div>

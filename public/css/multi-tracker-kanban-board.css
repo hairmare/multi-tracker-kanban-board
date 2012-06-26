@@ -3,8 +3,28 @@ html, body {
     margin: 0;
     overflow: hidden;
     padding: 0;
+    background-image: url('http://subtlepatterns.com/patterns/polaroid.png');
 }
- 
+
+.designPanel {
+    background-image: url('http://subtlepatterns.com/patterns/furley_bg.png');
+    font-family: 'Ruda', sans-serif;
+}
+.darkBar {
+    background-image: url('http://subtlepatterns.com/patterns/rubber_grip.png');
+    border-radius: 6px;
+    color: white;
+    font-family: 'Ruda', sans-serif;
+}
+.darkBar h1 {
+    font-weight: 900;
+    font-size: 18pt;
+    padding-left: 1em;
+}
+.darkBar option {
+    color: black;
+}
+
 #appLayout {
     height: 100%;
 }
@@ -13,4 +33,7 @@ html, body {
 }
 #boardTable {
     width: 100%;
+
+    /* override settings from dojo that made for strange 100% height bug */
+    background: url('http://subtlepatterns.com/patterns/furley_bg.png');
 }
